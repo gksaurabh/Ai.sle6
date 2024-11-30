@@ -23,7 +23,7 @@ def fetchDataFromAPI():
 #first fetch the data from the API, raise exception if unable to fetch
 try:
     products = fetchDataFromAPI()
-    print("Fetched products successfully:")
+    print("Fetched products successfully.")
 except Exception as e:
     print("Error:", str(e))
 
@@ -45,5 +45,9 @@ for item in products:
 df = pd.DataFrame(products)
 
 #insert df into our LanceDB table.
-create_table_from_Dataframe("products",df,db)
-db.open_table("products")
+table = create_table_from_Dataframe("products",df,db)
+
+
+df = table.to_pandas()
+
+print(df.head())
