@@ -1,4 +1,7 @@
+import pandas as pd
 import lancedb
+from lancedb.pydantic import LanceModel, Vector
+from lancedb.embeddings import get_registry
 
 #create a connection. URI example: "data/lanceDB" this also returns the DB
 def get_DB(uri):
@@ -24,4 +27,7 @@ def get_table(database, table_name, schema):
         return database.create_table(table_name, schema)
     
 
-    
+# def configDB():
+#     db = get_DB("products")
+#     model = get_registry().get("sentence-transformers").create(name="all-MiniLM-L6-v2", device="cpu")
+

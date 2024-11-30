@@ -3,7 +3,7 @@ import pandas as pd
 from db import get_DB, create_table_from_Dataframe, get_table
 from embeddings import create_embeddings, create_query_embedding
 from lancedb.pydantic import LanceModel, Vector
-from lancedb.embeddings import EmbeddingFunctionRegistry
+from lancedb.embeddings import EmbeddingFunctionRegistry, get_registry
 
 
 # get data from API. Made this into a function in order to test easily. or change API
@@ -39,7 +39,7 @@ for item in products:
     item["rating_count"] = item["rating"]["count"]
     del item["rating"]
 
-    item["embedding"] = create_embeddings(item["description"])
+    item["vector"] = create_embeddings(item["description"])
 
 #convert our products into a data frame.
 df = pd.DataFrame(products)
@@ -50,4 +50,14 @@ table = create_table_from_Dataframe("products",df,db)
 
 df = table.to_pandas()
 
-print(df.head())
+#print(df.head())
+
+query = "I am looking for a a high quality t shirt that has good ratings."
+k = 5
+
+query_embedding = create_query_embedding(query)
+
+result = table.search(query_embedding).limit(5).to_list()
+
+results_df = pd.DataFrame(result)
+print(results_df)
