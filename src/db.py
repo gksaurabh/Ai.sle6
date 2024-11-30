@@ -7,9 +7,9 @@ def get_DB(uri):
 
 #create a table using a pandas data frame passed through the parameter
 #the database is also passed through the parameter.
-def create_table_from_Dataframe(dataframe, database):
+def create_table_from_Dataframe(table_Name, dataframe, database):
     # here I am using only the synchrounous client for LanceDB
-    table = database.create("table_from_df", data=dataframe)
+    table = database.create_table(table_Name, data=dataframe)
 
 #get table if table name is found in the data base
 # if not found create a table given the schema. 
