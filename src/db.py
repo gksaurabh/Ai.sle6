@@ -1,7 +1,49 @@
 import pandas as pd
+import requests
+import csv
 import lancedb
 from lancedb.pydantic import LanceModel, Vector
 from lancedb.embeddings import get_registry
+from embeddings import create_embeddings, create_query_embedding, combine_chunked_embeddings
+
+def fetchDataFromAPI():
+    url = "https://fakestoreapi.com/products"
+    response = requests.get(url) #track the response from the server as a variable to help with further logic
+
+    # If the status code is 200, meaning everything went well. Return products.json
+    # else return an exception. 
+    if response.status_code == 200:
+        result = response.json()
+
+        # Flatten the rating into two different columns 
+        for item in result:
+            item["rating_rate"] = item["rating"]["rate"]
+            item["rating_count"] = item["rating"]["count"]
+            del item["rating"]
+
+        return result
+    else:
+        raise Exception(f"Failed to get data from {url}. Status: {response.status_code}") 
+
+
+def fetchDataFromCSV(csv_file_path, products):
+    with open(csv_file_path, mode="r", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            # Convert row into the desired dictionary structure
+            product = {
+                "id": int(row["id"]),
+                "title": row["title"],
+                "price": float(row["price"]),
+                "description": row["description"],
+                "category": row["category"],
+                "image": row["image"],
+                "rating_rate": float(row["rating_rate"]),
+                "rating_count": int(row["rating_count"])
+            }
+            products.append(product) 
+
+
 
 #create a connection. URI example: "data/lanceDB" this also returns the DB
 def get_DB(uri):
@@ -26,9 +68,48 @@ def get_table(database, table_name, schema):
         return database.open_table(table_name)
     else:
         return database.create_table(table_name, schema)
+
+def get_products():
+    try:
+        products = fetchDataFromAPI()
+        print("Fetched products from API successfully.")
+
+        #add products from the CSV
+        fetchDataFromCSV('products.csv', products)
+        print("Fetched products from CSV successfully.")
+        return products
+    except Exception as e:
+        print("Error:", str(e))
+        return e
     
 
-# def configDB():
-#     db = get_DB("products")
-#     model = get_registry().get("sentence-transformers").create(name="all-MiniLM-L6-v2", device="cpu")
+def initializeDB(products):
 
+    # Database handling.
+
+    #initialize the data base
+    db = get_DB("lancedb")
+
+    headersWeights = {
+        "title": 0.6,
+        "description": 0.4,
+        "price": 0.0,
+        "rating_rate": 0.0,
+        "category": 0.00
+        }
+
+    #itterate through each item and calculate the combined chunked embeddings
+    for item in products:
+        #item["vector"] = create_embeddings(item["title"])
+        item["vector"] = combine_chunked_embeddings(headersWeights, item)
+
+    #convert our products into a data frame.
+    df = pd.DataFrame(products)
+
+    #insert df into our LanceDB table.
+    table = create_table_from_Dataframe("products",df,db)
+
+
+if __name__ == "__main__":
+    products = get_products()
+    initializeDB(products)

@@ -8,82 +8,9 @@ from lancedb.embeddings import EmbeddingFunctionRegistry, get_registry
 from langchain_community.llms.ollama import Ollama
 
 
-# get data from API. Made this into a function in order to test easily. or change API
-def fetchDataFromAPI():
-    url = "https://fakestoreapi.com/products"
-    response = requests.get(url) #track the response from the server as a variable to help with further logic
 
-    # If the status code is 200, meaning everything went well. Return products.json
-    # else return an exception. 
-    if response.status_code == 200:
-        result = response.json()
-
-        # Flatten the rating into two different columns 
-        for item in result:
-            item["rating_rate"] = item["rating"]["rate"]
-            item["rating_count"] = item["rating"]["count"]
-            del item["rating"]
-
-        return result
-    else:
-        raise Exception(f"Failed to get data from {url}. Status: {response.status_code}") 
-
-
-def fetchDataFromCSV(csv_file_path, products):
-    with open(csv_file_path, mode="r", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            # Convert row into the desired dictionary structure
-            product = {
-                "id": int(row["id"]),
-                "title": row["title"],
-                "price": float(row["price"]),
-                "description": row["description"],
-                "category": row["category"],
-                "image": row["image"],
-                "rating_rate": float(row["rating_rate"]),
-                "rating_count": int(row["rating_count"])
-            }
-            products.append(product) 
-
-
-
-#first fetch the data from the API, raise exception if unable to fetch
-try:
-    products = fetchDataFromAPI()
-    print("Fetched products from API successfully.")
-
-    #add products from the CSV
-    fetchDataFromCSV('products.csv', products)
-    print("Fetched products from CSV successfully.")
-except Exception as e:
-    print("Error:", str(e))
-
-
-
-# Database handling.
-
-#initialize the data base
 db = get_DB("lancedb")
-
-headersWeights = {
-    "title": 0.5,
-    "description": 0.3,
-    "price": 0.1,
-    "rating_rate": 0.1,
-    "category": 0.00
-    }
-
-#itterate through each item and calculate the combined chunked embeddings
-for item in products:
-    #item["vector"] = create_embeddings(item["title"])
-    item["vector"] = combine_chunked_embeddings(headersWeights, item)
-
-#convert our products into a data frame.
-df = pd.DataFrame(products)
-
-#insert df into our LanceDB table.
-table = create_table_from_Dataframe("products",df,db)
+table = get_table(db, "products", None)
 
 #input our querries 
 query = input("Please enter your query: \n")
