@@ -9,3 +9,9 @@ __pycache__/
 # OS-specific
 .DS_Store
 Thumbs.db
+
+#lanceDB
+lanceDB/
+
+#ENV variables
+.env
