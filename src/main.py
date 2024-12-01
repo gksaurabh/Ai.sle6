@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 import csv
 from db import get_DB, create_table_from_Dataframe, get_table
-from embeddings import create_embeddings, create_query_embedding
+from embeddings import create_embeddings, create_query_embedding, combine_chunked_embeddings
 from lancedb.pydantic import LanceModel, Vector
 from lancedb.embeddings import EmbeddingFunctionRegistry, get_registry
 
@@ -46,6 +46,7 @@ def fetchDataFromCSV(csv_file_path, products):
             products.append(product) 
 
 
+
 #first fetch the data from the API, raise exception if unable to fetch
 try:
     products = fetchDataFromAPI()
@@ -64,20 +65,20 @@ except Exception as e:
 #initialize the data base
 db = get_DB("lancedb")
 
-
+headers = ["title", "description", "price", "rating_rate", "category"]
+#itterate through each item and calculate the combined chunked embeddings
 for item in products:
-    item["vector"] = create_embeddings(item["description"])
+
+    item["vector"] = combine_chunked_embeddings(headers, item)
 
 #convert our products into a data frame.
 df = pd.DataFrame(products)
-
-print(df)
 
 #insert df into our LanceDB table.
 table = create_table_from_Dataframe("products",df,db)
 
 #input our querries 
-query = "I am looking for sleak sneakers for men that i can use daily"
+query = "what womens pants do you have that i can wear exercising?"
 k = 5
 
 #calulate the text embedding for our querry
