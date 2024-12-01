@@ -12,8 +12,9 @@ def get_DB(uri):
 #the database is also passed through the parameter.
 def create_table_from_Dataframe(table_name, dataframe, database):
     if table_name in database.table_names():
-        print("table already exists")
-        return database.open_table(table_name)
+        print("table already exists, updating table with new content")
+        database.drop_table(table_name)
+        return database.create_table(table_name, data=dataframe)
     else:
         # here I am using only the synchrounous client for LanceDB
         return database.create_table(table_name, data=dataframe)

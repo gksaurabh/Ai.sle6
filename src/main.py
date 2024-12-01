@@ -5,6 +5,7 @@ from db import get_DB, create_table_from_Dataframe, get_table
 from embeddings import create_embeddings, create_query_embedding, combine_chunked_embeddings
 from lancedb.pydantic import LanceModel, Vector
 from lancedb.embeddings import EmbeddingFunctionRegistry, get_registry
+from langchain_community.llms.ollama import Ollama
 
 
 # get data from API. Made this into a function in order to test easily. or change API
@@ -65,11 +66,18 @@ except Exception as e:
 #initialize the data base
 db = get_DB("lancedb")
 
-headers = ["title", "description", "price", "rating_rate", "category"]
+headersWeights = {
+    "title": 0.5,
+    "description": 0.3,
+    "price": 0.1,
+    "rating_rate": 0.1,
+    "category": 0.00
+    }
+
 #itterate through each item and calculate the combined chunked embeddings
 for item in products:
-
-    item["vector"] = combine_chunked_embeddings(headers, item)
+    #item["vector"] = create_embeddings(item["title"])
+    item["vector"] = combine_chunked_embeddings(headersWeights, item)
 
 #convert our products into a data frame.
 df = pd.DataFrame(products)
@@ -78,7 +86,7 @@ df = pd.DataFrame(products)
 table = create_table_from_Dataframe("products",df,db)
 
 #input our querries 
-query = "what womens pants do you have that i can wear exercising?"
+query = input("Please enter your query: \n")
 k = 5
 
 #calulate the text embedding for our querry
@@ -89,4 +97,6 @@ search_result = table.search(query_embedding).limit(5).to_df()
 print(search_result)
 
 context = search_result
+
+
 

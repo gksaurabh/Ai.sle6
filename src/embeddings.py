@@ -14,15 +14,15 @@ def create_query_embedding(query):
     return model.encode(query)
 
 # going to create a chunked embedding to improve search accuracy and take in other fields as embeddings such as title, price, rating, etc. 
-# takes in a list of headers (ex. title, description, price, rating) and the individual item.  
-def combine_chunked_embeddings(headers, item):
+# takes in a diction of headers (ex. title, description, price, rating) along with their weights, and the individual item.  
+def combine_chunked_embeddings(headersWeights, product):
     chunk_embeddings = []
 
     #itterate through the headers in the item and calculate the embeddings and append them into one. 
-    for header in headers:
-        text = str(item[header])
-        embedding = create_embeddings(text)
+    for header, weight in headersWeights.items():
+        text = str(product[header])
+        embedding = create_embeddings(text) * weight
         chunk_embeddings.append(embedding)
     # take the vector mean and calculate the combined embedding.    
-    combined_embeddings = np.mean(chunk_embeddings, axis=0)
+    combined_embeddings = np.sum(chunk_embeddings, axis=0)
     return combined_embeddings
