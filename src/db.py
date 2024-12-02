@@ -6,6 +6,7 @@ from lancedb.pydantic import LanceModel, Vector
 from lancedb.embeddings import get_registry
 from embeddings import create_embeddings, create_query_embedding, combine_chunked_embeddings
 
+# method to fetch data from the fake store API
 def fetchDataFromAPI():
     url = "https://fakestoreapi.com/products"
     response = requests.get(url) #track the response from the server as a variable to help with further logic
@@ -23,9 +24,10 @@ def fetchDataFromAPI():
 
         return result
     else:
-        raise Exception(f"Failed to get data from {url}. Status: {response.status_code}") 
+        return Exception(f"Failed to get data from {url}. Status: {response.status_code}") 
 
-
+#  void method to load any local products we have in our products.csv
+# but uses parameter variable manipulation.
 def fetchDataFromCSV(csv_file_path, products):
     with open(csv_file_path, mode="r", encoding="utf-8") as file:
         reader = csv.DictReader(file)
@@ -62,13 +64,20 @@ def create_table_from_Dataframe(table_name, dataframe, database):
         return database.create_table(table_name, data=dataframe)
 
 #get table if table name is found in the data base
-# if not found create a table given the schema. 
+    # if not found create a table given the schema. 
 def get_table(database, table_name, schema):
     if table_name in database.table_names():
         return database.open_table(table_name)
     else:
         return database.create_table(table_name, schema)
 
+# get all the products as the default value which is an array of arrays. 
+    # [ [   
+    #       {"id":1,
+    #        "name": name,
+    #        ...
+    #       }   
+    # ] ]
 def get_products():
     try:
         products = fetchDataFromAPI()
@@ -89,6 +98,13 @@ def initializeDB(products):
 
     #initialize the data base
     db = get_DB("lancedb")
+
+    # A dictionary is created to help with finetuning our embeddings. 
+        # the advandage of this is that we can choose different weights for future queries.
+        # For example if a customer asks what is your lowest price shoes, then we can use entity recognition to 
+        # recognize the words "price" and "show" along with the descriptive "low" to change the weightage of 
+        # the price to a higher value. 
+        # we can also add more headers to consider into our embeddings. 
 
     headersWeights = {
         "title": 0.6,

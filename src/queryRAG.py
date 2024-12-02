@@ -9,6 +9,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
 
 
+# This function will handle the query and push it through RAG pipeline. 
 def query_rag_handler(query):
 
   db = get_DB("lancedb")
@@ -22,11 +23,11 @@ def query_rag_handler(query):
 
   #perform a distance search
   search_result = table.search(query_embedding).limit(k).to_pandas()
-  #print(search_result)
+  
 
-  # context = search_result
-
-
+  # A prompt template is defined 
+  # it is fed the search resuly (distance search from the nearest neighbours) as the context
+  # the query is fed as the question.
   PROMPT_TEMPLATE = """
   You are an assistant for a general store, similar to Walmart. Your role is to interpret and route the question to a specific department, and show availability and prices for the products. You are to only provide accurate responses strictly based on the provided context.
 
@@ -60,15 +61,22 @@ def query_rag_handler(query):
 
   """
 
+  
+  # a prompt variable is created and the our template is fed into LangChains ChatPromptTemplate function.
+
   prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
 
+  #The LLM model is defined (running locally) llama3.2
   model = OllamaLLM(model="llama3.2")
 
+  # we define our chain saying that first the prompt is created then fed into to the model.
   chain = prompt | model
 
+  # the chain is invoked with its parameter (search_result and query as context and question) and its response is stored as our result
   result = chain.invoke({"context" : search_result, "customer_question": query})
 
-  print("\n" + result + "\n")
+  # return the result as with some extra next line characters wrapped around it. 
+  return ("\n" + result + "\n")
 
 
 if __name__ == "__main__":
