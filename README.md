@@ -49,13 +49,18 @@ flask --app routes run
 3. LanceDB performs a similarity search to find the most relevant products.
 4. The results, including department, product details, prices, and availability, are returned to the customer.
 
-## Contributing
-If you'd like to contribute to this project, feel free to submit a pull request or open an issue.
-
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Acknowledgements
+## Acknowledgements Informative Videos
 - [LanceDB Documentation](https://lancedb.ai/docs)
-- [Sentence Transformers](https://www.sbert.net/)
+- [Sentence Transformers - all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)
 - [Ollama](https://ollama.com/)
+- [Ollama Documentation](https://python.langchain.com/v0.1/docs/integrations/llms/ollama/)
+## Inspiring and Informative Videos
+
+Below is a list of insightful and detailed videos that greatly influenced and guided the development of this project:
+
+- [Python RAG Tutorial (with Local LLMs): AI For Your PDFs | pixegami](https://www.youtube.com/watch?v=2TJxpyO3ei4&t=834s&ab_channel=pixegami)
+- [Understanding Vector Similarity Search | KX](https://www.youtube.com/watch?v=qQ8HNRHRRQw&ab_channel=KX)
+- [Chang She - LanceDB: lightweight billion-scale vector search for multimodal AI | PyData Global 2023 | PyData](https://www.youtube.com/watch?v=kF1IFBQ_KD4&t=826s&ab_channel=PyData)
+- [Ollama and LanceDB: The best combination for Local RAG?| Learn Data with Mark](https://www.youtube.com/watch?v=HcqGiCu2Bjs&ab_channel=LearnDatawithMark)
+- [Intro to LanceDB in 2 Minutes | LanceDB](https://www.youtube.com/watch?v=6SweXJhboTA&ab_channel=LanceDB)
+- [Learn RAG From Scratch – Python AI Tutorial from a LangChain Engineer | freeCodeCamp.org](https://www.youtube.com/watch?v=sVcwVQRHIc8&t=1148s&ab_channel=freeCodeCamp.org)
