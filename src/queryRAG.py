@@ -43,11 +43,11 @@ def query_rag_handler(query):
 
   **Important Instructions**:
     1. Use only the provided context for your response. Do not fabricate or infer additional information.
-    2. You must mention the specific department, and show availability and prices for the products
+    2. You must mention the specific department, and show availability and prices only for relavent products
     2. If the requested product is unavailable in the context, politely inform the customer that we do not currently have it in stock.
     3. Do not suggest products or departments unless they exist in the provided context.
     4. Always respond in a polite and conversational tone.
-    5. Never end your response with a question.
+    5. Do not ask a question.
 
   Customer Question:
   "{customer_question}"
@@ -56,9 +56,11 @@ def query_rag_handler(query):
   {context}
 
   Response:
-  Write a conversational response summarizing your findings or explaining that no match was found. If no products match, respond like this: 
-  "I'm sorry, but we currently do not have any products matching your request." You must mention the specific department, and show availability and prices for the products
-
+  Do not mention any products that are not similar to the requested one, but If a similar product is found:
+  Start your "Head over to <department name>" . Write a conversational response summarizing your findings.
+  You must mention the specific department, and show availability, prices, rating, and rating count for the products  
+  
+  Do not end your response with any follow up questions.
   """
 
   
