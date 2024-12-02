@@ -49,11 +49,14 @@ flask --app routes run
 3. LanceDB performs a similarity search to find the most relevant products.
 4. The results, including department, product details, prices, and availability, are returned to the customer.
 
-## Acknowledgements Informative Videos
+## Acknowledgements
 - [LanceDB Documentation](https://lancedb.ai/docs)
 - [Sentence Transformers - all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)
 - [Ollama](https://ollama.com/)
 - [Ollama Documentation](https://python.langchain.com/v0.1/docs/integrations/llms/ollama/)
+- [Flask Documentation](https://flask.palletsprojects.com/en/stable/)
+
+
 ## Inspiring and Informative Videos
 
 Below is a list of insightful and detailed videos that greatly influenced and guided the development of this project:
