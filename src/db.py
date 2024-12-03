@@ -124,6 +124,7 @@ def initializeDB(products):
         #convert our products into a data frame.
         df = pd.DataFrame(products)
 
+        print("Embeddings have been calculated. Populating table")
         #insert df into our LanceDB table.
         table = create_table_from_Dataframe("products",df,db)
         print("Table has been created")
