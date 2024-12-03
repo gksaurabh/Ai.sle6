@@ -98,32 +98,35 @@ def initializeDB(products):
 
     #initialize the data base
     db = get_DB("lancedb")
-
+    
     # A dictionary is created to help with finetuning our embeddings. 
         # the advandage of this is that we can choose different weights for future queries.
         # For example if a customer asks what is your lowest price shoes, then we can use entity recognition to 
         # recognize the words "price" and "show" along with the descriptive "low" to change the weightage of 
         # the price to a higher value. 
         # we can also add more headers to consider into our embeddings. 
+    if "products" not in db.table_names():
+        print("Creating Table - please wait")
+        headersWeights = {
+            "title": 0.6,
+            "description": 0.4,
+            "price": 0.0,
+            "rating_rate": 0.0,
+            "category": 0.00
+            }
 
-    headersWeights = {
-        "title": 0.6,
-        "description": 0.4,
-        "price": 0.0,
-        "rating_rate": 0.0,
-        "category": 0.00
-        }
+        print("Calculating Embeddings")
+        #itterate through each item and calculate the combined chunked embeddings
+        for item in products:
+            #item["vector"] = create_embeddings(item["title"])
+            item["vector"] = combine_chunked_embeddings(headersWeights, item)
 
-    #itterate through each item and calculate the combined chunked embeddings
-    for item in products:
-        #item["vector"] = create_embeddings(item["title"])
-        item["vector"] = combine_chunked_embeddings(headersWeights, item)
+        #convert our products into a data frame.
+        df = pd.DataFrame(products)
 
-    #convert our products into a data frame.
-    df = pd.DataFrame(products)
-
-    #insert df into our LanceDB table.
-    table = create_table_from_Dataframe("products",df,db)
+        #insert df into our LanceDB table.
+        table = create_table_from_Dataframe("products",df,db)
+        print("Table has been created")
 
 
 if __name__ == "__main__":
