@@ -7,6 +7,7 @@ import numpy as np
 # defining my model from the SentenceTransformers library.
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
+
 #model = OpenAIEmbeddings(model="text-embedding-ada-002", openai_api_key=os.getenv('OPENAI_API_KEY')) #experimented with different model - lower accuracy
 
 
@@ -31,5 +32,5 @@ def combine_chunked_embeddings(headersWeights, product):
 
     # take the vector weighted sum and calculate the combined embedding.
     combined_embeddings = np.sum(chunk_embeddings, axis=0)  #chunk_embeddings = np.array(chunk_embeddings)    #use only if using openAI embedding model
-    
+    print(combined_embeddings)
     return combined_embeddings
