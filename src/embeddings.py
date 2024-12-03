@@ -32,5 +32,5 @@ def combine_chunked_embeddings(headersWeights, product):
 
     # take the vector weighted sum and calculate the combined embedding.
     combined_embeddings = np.sum(chunk_embeddings, axis=0)  #chunk_embeddings = np.array(chunk_embeddings)    #use only if using openAI embedding model
-    print(combined_embeddings)
+    
     return combined_embeddings
