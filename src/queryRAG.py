@@ -16,11 +16,12 @@ def query_rag_handler(query):
   table = get_table(db, "products", None)
 
   
-  k = 5
 
   #calulate the text embedding for our querry
   query_embedding = create_query_embedding(query)
 
+
+  k = 5
   #perform a distance search
   search_result = table.search(query_embedding).limit(k).to_pandas()
   

@@ -26,24 +26,29 @@ def fetchDataFromAPI():
     else:
         return Exception(f"Failed to get data from {url}. Status: {response.status_code}") 
 
-#  void method to load any local products we have in our products.csv
-# but uses parameter variable manipulation.
+# method to load any local products we have in our products.csv
+# uses parameter variable manipulation.
 def fetchDataFromCSV(csv_file_path, products):
-    with open(csv_file_path, mode="r", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            # Convert row into the desired dictionary structure
-            product = {
-                "id": int(row["id"]),
-                "title": row["title"],
-                "price": float(row["price"]),
-                "description": row["description"],
-                "category": row["category"],
-                "image": row["image"],
-                "rating_rate": float(row["rating_rate"]),
-                "rating_count": int(row["rating_count"])
-            }
-            products.append(product) 
+    try:
+        with open(csv_file_path, mode="r", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                # Convert row into the desired dictionary structure
+                product = {
+                    "id": int(row["id"]),
+                    "title": row["title"],
+                    "price": float(row["price"]),
+                    "description": row["description"],
+                    "category": row["category"],
+                    "image": row["image"],
+                    "rating_rate": float(row["rating_rate"]),
+                    "rating_count": int(row["rating_count"])
+                }
+                products.append(product) 
+            return 
+    except Exception as e:
+        print("Error:", str(e))
+        return e
 
 
 
@@ -128,6 +133,7 @@ def initializeDB(products):
         #insert df into our LanceDB table.
         table = create_table_from_Dataframe("products",df,db)
         print("Table has been created")
+
 
 
 if __name__ == "__main__":
