@@ -15,6 +15,9 @@ This project implements a Retrieval-Augmented Generation (RAG) model for a retai
 - **Language Model**: `llama3.2` (via Ollama)
 - **Backend Framework**: Flask
 
+## RAG Model Architecture
+![RAG Model Architecture](RAG-Model.drawio.png)
+
 ## Requirements
 - Python 3.8 or above
 - [Ollama](https://ollama.com/) (for `llama3.2` LLM)
