@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AIsle6 Retail Store</title>
+  <script>
+    // Just a basic script to help get the query from the text box and spit out an answer.
+    async function handleQuery() {
+        // set our query Value by getting the query element and response container will be the response element.
+        const queryValue = document.getElementById('query');
+        const responseContainer = document.getElementById('response');
+        const query = queryValue.value;
+
+        // if no query is entered the just output no query entered. 
+        if (!query) {
+            responseContainer.innerHTML = '<p style="color: red;">Please enter a query.</p>';
+            return;
+        }
+
+        //try to get the response from the API
+        try {
+            // just display as loading to show that we are waiting for a response.
+            responseContainer.innerHTML = '<p>Loading...</p>'; 
+
+            //post method with query as body for our search endpoin.
+            const response = await fetch('http://127.0.0.1:5000/search', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ query }),
+            });
+
+            //if response was okay display text (inside result) as a paragraph
+            if (response.ok) {
+                const data = await response.json();
+                const result = data[1]; 
+                responseContainer.innerHTML = `<pre style="background: #f4f4f4; padding: 1em; border: 1px solid #ddd; border-radius: 4px; white-space: pre-wrap;">${result}</pre>`;
+            } else {
+                //an error occoured in the data
+                const errorData = await response.json();
+                responseContainer.innerHTML = `<p style="color: red;">Error: ${errorData.error || 'Something went wrong.'}</p>`;
+            }
+        // in case an error: display error.    
+        } catch (error) {
+            responseContainer.innerHTML = `<p style="color: red;">Unable to connect to the API. Please try again later.</p>`;
+        }
+    }
+  </script>
+</head>
+<body>
+  <h1>Welcome to AIsle6 Retail Store</h1>
+  <form action="javascript:void(0);" onsubmit="handleQuery()">
+    <label for="query">I am AIly, your AI helper. How can I help you today?</label>
+    <br>
+    <input type="text" id="query" name="query" value="" style="width: 100%; padding: 0.5em; margin-top: 0.5em; border: 1px solid #ccc; border-radius: 4px;">
+    <br>
+    <button type="submit" style="margin-top: 1em; padding: 0.5em 1em; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Ask AIly</button>
+  </form>
+  
+
+  <div id="response" style="margin-top: 2em;"></div>
+</body>
+</html>
