@@ -46,6 +46,9 @@ Start the Flask server:
 flask --app routes run
 ```
 
+### Step 4: Load index.html
+Open index.html in your browser and ask away! 
+
 ## How It Works
 1. The customer inputs a query (e.g., "Show me summer dresses").
 2. The model calculates embeddings using a weighted sum of product attributes.
