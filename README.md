@@ -67,3 +67,4 @@ Below is a list of insightful and detailed videos that greatly influenced and gu
 - [Ollama and LanceDB: The best combination for Local RAG?| Learn Data with Mark](https://www.youtube.com/watch?v=HcqGiCu2Bjs&ab_channel=LearnDatawithMark)
 - [Intro to LanceDB in 2 Minutes | LanceDB](https://www.youtube.com/watch?v=6SweXJhboTA&ab_channel=LanceDB)
 - [Learn RAG From Scratch – Python AI Tutorial from a LangChain Engineer | freeCodeCamp.org](https://www.youtube.com/watch?v=sVcwVQRHIc8&t=1148s&ab_channel=freeCodeCamp.org)
+- [Flask REST API Python series: How to unit test for your API | unittest Python](https://www.youtube.com/watch?v=dTvJwxrM1VY&ab_channel=CodeWithPrince)
